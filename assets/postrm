@@ -1,0 +1,30 @@
+#!/bin/bash
+# postrm —— purge 时清理状态/用户；remove 保留 /var/lib/tailscale（重装可续用节点身份）
+set -e
+
+APPID="tailscale"
+LOG="/var/log/${APPID}-maint.log"
+
+touch "$LOG" 2>/dev/null || true
+log() { printf '%s\n' "$*" | tee -a "$LOG"; }
+
+log "=== postrm $1 $(date -Is) ==="
+
+if [ "$1" = "purge" ]; then
+  rm -rf "/var/lib/${APPID}" "/run/${APPID}"
+  # 应用目录里由 postinst 解压出来的 webui/ 不属于 dpkg 清单，需手动清
+  rm -rf "/usr/local/${APPID}"
+  userdel "$APPID" >/dev/null 2>&1 || true
+  groupdel "$APPID" >/dev/null 2>&1 || true
+  rm -f "/etc/nginx/conf.d/${APPID}.conf.disabled"
+  log "已 purge：删除 /var/lib/${APPID}、运行用户与残留配置"
+elif [ "$1" = "remove" ]; then
+  # remove 保留节点身份与登录态，便于重新安装后无需重新登录
+  rm -rf "/run/${APPID}" "/usr/local/${APPID}/webui"
+  log "已 remove：保留 /var/lib/${APPID}（节点身份与登录态）"
+fi
+
+systemctl daemon-reload >/dev/null 2>&1 || true
+[ "$1" = "purge" ] && rm -f "$LOG" || true
+
+exit 0

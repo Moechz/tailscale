@@ -1,0 +1,15 @@
+# 构建产物与凭据
+build/
+out/
+.secrets/
+*.deb
+*.deb.sha256
+
+# 内部交接文档（不进公开仓，指南坑 20）
+AGENTS.md
+HANDOFF.md
+docs/
+
+# 系统垃圾
+.DS_Store
+._*

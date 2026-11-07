@@ -1,0 +1,36 @@
+#!/bin/bash
+# preinst —— 幂等兜底：专用用户 + /dev/net/tun 设备节点
+set -e
+
+APPID="tailscale"
+LOG="/var/log/${APPID}-maint.log"
+
+mkdir -p /var/log
+touch "$LOG" 2>/dev/null || true
+log() { printf '%s\n' "$*" | tee -a "$LOG"; }
+
+log "=== preinst $1 $(date -Is) ==="
+
+# 1) 专用非 root 用户（应用中心安装时平台也会建号；本处兜底手动 apt/dpkg 路径）
+if ! getent passwd "$APPID" >/dev/null 2>&1; then
+  useradd --system --user-group --no-create-home --shell /usr/sbin/nologin "$APPID"
+  log "已创建系统用户 $APPID"
+else
+  log "系统用户 $APPID 已存在，跳过"
+fi
+
+# 2) TOS 默认不创建 /dev/net/tun；tailscaled 需要它才能建 TUN 接口。
+#    这里先建一次（postinst 与 tmpfiles.d 会再兜底），避免安装即启动时缺设备。
+if [ ! -c /dev/net/tun ]; then
+  mkdir -p /dev/net
+  if mknod /dev/net/tun c 10 200 2>>"$LOG"; then
+    chmod 666 /dev/net/tun
+    log "已创建设备节点 /dev/net/tun (c 10 200)"
+  else
+    log "警告: 创建 /dev/net/tun 失败，服务可能无法建 TUN（检查内核 tun 模块）"
+  fi
+else
+  log "/dev/net/tun 已存在"
+fi
+
+exit 0

@@ -1,0 +1,37 @@
+# Tailscale for TOS —— 隐私政策（C3 合规资产，随包携带）
+
+最后更新：2026-11-07
+
+本应用（Tailscale for TOS）是 **Tailscale 官方软件的 TerraMaster TOS 移植包**，
+本身**不收集、不存储、不上传任何用户数据**。应用由打包者 Moechz 维护，
+不属于 TerraMaster 官方应用。
+
+## 一、应用自身处理的数据
+
+| 数据 | 位置 | 用途 | 是否外发 |
+|---|---|---|---|
+| 节点身份密钥、登录态 | `/var/lib/tailscale/` | 维持本机在 Tailscale 网络中的身份 | 仅与 Tailscale 协调服务器交换必要信令 |
+| 连接状态、对端列表 | 内存 + 上述目录 | 在控制台展示网络状态 | 否 |
+| 运行日志 | systemd journal | 排障 | 否 |
+
+本应用不包含统计 SDK、不采集遥测、不读取 NAS 上的共享文件内容。
+
+## 二、第三方服务
+
+Tailscale 是覆盖网络服务，使用本应用即意味着与以下端点通信：
+
+- **协调服务器** `controlplane.tailscale.com`：交换节点公钥、ACL、网络地图（WireGuard 加密隧道的信令面）。
+- **DERP 中继** `derp*.tailscale.com`：NAT 穿透失败时中继加密流量（内容对中继不可见）。
+- **登录授权页** `login.tailscale.com`：仅在您点击"登录"时由浏览器直接打开。
+
+上述通信受 Tailscale 隐私政策约束：https://tailscale.com/privacy-policy
+
+## 三、您的选择
+
+- 不登录即可安装与卸载，此时不产生任何对外连接（服务保持 idle）。
+- 卸载：`apt remove` 保留节点身份；`apt purge` 彻底删除 `/var/lib/tailscale`。
+- 更换账号前请在控制台登出，否则管理后台会残留旧设备记录。
+
+## 四、联系方式
+
+问题与隐私相关请求：https://github.com/Moechz/tailscale/issues

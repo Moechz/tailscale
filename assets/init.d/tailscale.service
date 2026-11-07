@@ -1,0 +1,53 @@
+[Unit]
+Description=Tailscale node agent
+Documentation=https://tailscale.com/kb/
+Wants=network-online.target
+After=network-online.target systemd-resolved.service
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Service]
+Type=notify
+User=tailscale
+Group=tailscale
+WorkingDirectory=/usr/local/tailscale
+Environment=HOME=/var/lib/tailscale
+Environment=XDG_CACHE_HOME=/var/lib/tailscale/.cache
+EnvironmentFile=-/usr/local/tailscale/tailscale.env
+# 状态/运行时/缓存目录由 systemd 创建并自动加入可写路径
+StateDirectory=tailscale
+StateDirectoryMode=0700
+RuntimeDirectory=tailscale
+RuntimeDirectoryMode=0755
+CacheDirectory=tailscale
+CacheDirectoryMode=0750
+# MagicDNS：TOS 的 systemd-resolved 是 uplink 模式（resolv.conf 指向真实 DNS，
+# 而非 127.0.0.53），tailscaled 会选 direct 模式直接改 /etc/resolv.conf；但该文件
+# 属 systemd-resolve、非 root 不可写（实测）。postinst 首装时用
+# `tailscale set --accept-dns=false` 把 CorpDNS 关掉，避免健康告警（见 D-016）。
+# 注意：accept-dns 是 `tailscale set/up` 的 pref，**不是** tailscaled 的命令行 flag，
+# 写到 ExecStart 会让 daemon 以 2/INVALIDARGUMENT 退出（已实锤）。
+#
+# 参数全部写死：systemd 的 ExecStart 只支持基本 ${VAR} 展开，不支持 shell 风格
+# ${VAR:-默认}（会被整串展开为空导致参数残缺 → 启动即崩，指南坑 1）。
+# 需要改监听端口/网卡名时，复制本文件到 /etc/systemd/system/tailscale.service 修改。
+ExecStart=/usr/local/tailscale/bin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/tailscaled.sock --port=41641 --tun=tailscale0
+# 停止时清理本进程放下的路由 / netfilter 规则（不清会残留，重启后对端不可达）
+ExecStopPost=-/usr/local/tailscale/bin/tailscaled --cleanup
+TimeoutStartSec=30
+TimeoutStopSec=10
+# 生命周期由 TOS 应用中心统一管理，按规范不配置 Restart/RestartSec
+# 运行身份：专用非 root 用户 + 仅保留建 TUN / 改路由所需的能力
+#（tailscaled 必须建 TUN 接口、写路由表，所以需要 NET_ADMIN；不需要 root 全权）
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=-/var/lib/tailscale -/run/tailscale
+LimitNOFILE=65536
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

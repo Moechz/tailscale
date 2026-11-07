@@ -1,0 +1,183 @@
+[zh-cn]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale 基于 WireGuard 把您的设备组成一个私有网络：无论 NAS 在家还是在公网，都能用固定的 100.x 地址安全访问，无需公网 IP、无需端口映射。本应用内置官方 tailscaled 守护进程与控制台，开机自启；控制台通过 TOS 网页（8181 端口的 /tailscale/ 路径）打开，不额外暴露端口。安装后点击图标即可登录账号（支持 Google/Microsoft/GitHub 等），在管理后台授权本设备后即可使用。"
+release_note = "首次发布：内置 Tailscale 1.104.5 官方静态二进制，支持 x86_64 与 aarch64 两种架构；提供与上游一致的 Web 控制台，可查看连接状态、登录/登出、启用 SSH、设置子网路由与出口节点。"
+important    = "节点身份保存在 /var/lib/tailscale：apt remove 保留（重装免重新登录），apt purge 才会删除。卸载或更换账号前请先在控制台登出，否则管理后台会残留旧设备记录。本应用仅监听回环地址，对外通信使用 UDP 41641。"
+
+[zh-hk]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale 基於 WireGuard 將您的裝置組成一個私有網絡：無論 NAS 在家居網絡還是公網，都可以用固定的 100.x 位址安全存取，毋須公網 IP、毋須端口映射。本應用內置官方 tailscaled 守護進程與控制台，開機自動啟動；控制台經 TOS 網頁（8181 端口的 /tailscale/ 路徑）開啟，不額外暴露端口。"
+release_note = "首次發佈：內置 Tailscale 1.104.5 官方靜態二進制，支援 x86_64 與 aarch64；提供與上游一致的 Web 控制台。"
+important    = "節點身份保存在 /var/lib/tailscale：apt remove 會保留（重裝免重新登入），apt purge 才會刪除。本應用僅監聽回環位址，對外通訊使用 UDP 41641。"
+
+[en-us]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale builds a private mesh network between your devices over WireGuard: reach this NAS from anywhere through a stable 100.x address, with no public IP and no port forwarding. This package bundles the official tailscaled daemon and the upstream web console as a dedicated, unprivileged service that starts with the system. The console is served through the TOS web UI at /tailscale/ (port 8181) and exposes no extra port. Click the desktop icon, sign in with your identity provider, and approve the device in the admin console."
+release_note = "First release: bundles the official Tailscale 1.104.5 static binaries for x86_64 and aarch64, with the upstream web console for status, login/logout, Tailscale SSH, subnet routes and exit nodes."
+important    = "Node identity and login state live in /var/lib/tailscale: 'apt remove' keeps them (reinstall keeps you signed in), 'apt purge' deletes them. Sign out from the console before switching accounts, otherwise the old device entry stays in the admin console. The app listens on loopback only; peer traffic uses UDP 41641."
+
+[fr-fr]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale crée un réseau privé maillé entre vos appareils via WireGuard : accédez à ce NAS depuis n'importe où avec une adresse 100.x stable, sans IP publique ni redirection de port. Ce paquet fournit le démon officiel tailscaled et la console web d'origine, exécutés par un utilisateur système dédié. La console est accessible via l'interface TOS à l'adresse /tailscale/ (port 8181) et n'expose aucun port supplémentaire."
+release_note = "Première version : binaires statiques officiels Tailscale 1.104.5 pour x86_64 et aarch64, avec la console web d'origine (état, connexion, SSH, routes de sous-réseau, nœuds de sortie)."
+important    = "L'identité du nœud est stockée dans /var/lib/tailscale : 'apt remove' la conserve, 'apt purge' la supprime. Déconnectez-vous avant de changer de compte. L'application n'écoute que sur la boucle locale ; le trafic entre pairs utilise UDP 41641."
+
+[de-de]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale bildet mit WireGuard ein privates Mesh-Netzwerk zwischen Ihren Geräten: Das NAS ist über eine feste 100.x-Adresse von überall erreichbar, ohne öffentliche IP und ohne Portweiterleitung. Dieses Paket enthält den offiziellen tailscaled-Dienst und die originale Weboberfläche, die als eigener Systembenutzer läuft. Die Oberfläche ist über die TOS-Weboberfläche unter /tailscale/ (Port 8181) erreichbar und öffnet keinen zusätzlichen Port."
+release_note = "Erste Veröffentlichung: offizielle statische Tailscale-1.104.5-Binaries für x86_64 und aarch64 mit der Original-Weboberfläche (Status, Anmeldung, SSH, Subnetzrouten, Exit-Nodes)."
+important    = "Die Knotenidentität liegt in /var/lib/tailscale: 'apt remove' behält sie, 'apt purge' löscht sie. Vor einem Kontowechsel abmelden. Die Anwendung lauscht nur auf Loopback; Peer-Verkehr nutzt UDP 41641."
+
+[it-it]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale crea una rete privata mesh tra i tuoi dispositivi tramite WireGuard: raggiungi questo NAS da qualsiasi luogo con un indirizzo 100.x stabile, senza IP pubblico né port forwarding. Il pacchetto include il demone ufficiale tailscaled e la console web originale, eseguiti con un utente di sistema dedicato. La console è raggiungibile dall'interfaccia TOS su /tailscale/ (porta 8181) e non espone porte aggiuntive."
+release_note = "Prima versione: binari statici ufficiali Tailscale 1.104.5 per x86_64 e aarch64 con la console web originale (stato, accesso, SSH, rotte di sottorete, nodi di uscita)."
+important    = "L'identità del nodo è in /var/lib/tailscale: 'apt remove' la conserva, 'apt purge' la elimina. Disconnettiti prima di cambiare account. L'app ascolta solo su loopback; il traffico peer usa UDP 41641."
+
+[es-es]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale crea una red privada de malla entre sus dispositivos mediante WireGuard: acceda a este NAS desde cualquier lugar con una dirección 100.x estable, sin IP pública ni reenvío de puertos. El paquete incluye el demonio oficial tailscaled y la consola web original, ejecutados con un usuario de sistema dedicado. La consola se abre desde la interfaz de TOS en /tailscale/ (puerto 8181) y no expone puertos adicionales."
+release_note = "Primera versión: binarios estáticos oficiales de Tailscale 1.104.5 para x86_64 y aarch64 con la consola web original (estado, inicio de sesión, SSH, rutas de subred y nodos de salida)."
+important    = "La identidad del nodo se guarda en /var/lib/tailscale: 'apt remove' la conserva, 'apt purge' la elimina. Cierre sesión antes de cambiar de cuenta. La aplicación solo escucha en loopback; el tráfico entre pares usa UDP 41641."
+
+[hu-hu]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "A Tailscale WireGuard alapú privát mesh-hálózatot épít az eszközei között: a NAS elérhető bárhonnan egy állandó 100.x címmel, nyilvános IP és porttovábbítás nélkül. A csomag az eredeti tailscaled szolgáltatást és webes felületet tartalmazza, külön rendszerfelhasználóval. A felület a TOS webes felületén, a /tailscale/ útvonalon érhető el (8181-es port), és nem nyit további portot."
+release_note = "Első kiadás: hivatalos Tailscale 1.104.5 statikus binárisok x86_64 és aarch64 architektúrára, az eredeti webes felülettel (állapot, bejelentkezés, SSH, alhálózati útvonalak, kilépési csomópontok)."
+important    = "A csomópont-identitás a /var/lib/tailscale könyvtárban található: az 'apt remove' megőrzi, az 'apt purge' törli. Fiókváltás előtt jelentkezzen ki. Az alkalmazás csak loopbacken figyel; a peer-forgalom UDP 41641-et használ."
+
+[ja-jp]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale は WireGuard を使ってデバイス間にプライベートなメッシュネットワークを構築します。グローバル IP もポート転送も不要で、固定の 100.x アドレスからどこでもこの NAS にアクセスできます。本パッケージは公式の tailscaled デーモンと Web コンソールを専用のシステムユーザーで実行します。コンソールは TOS の Web UI の /tailscale/（ポート 8181）から開け、追加のポートは公開しません。"
+release_note = "初回リリース：公式 Tailscale 1.104.5 の静的バイナリ（x86_64 / aarch64）と公式 Web コンソールを同梱。状態確認、ログイン、SSH、サブネットルート、出口ノードに対応。"
+important    = "ノード ID は /var/lib/tailscale に保存されます。'apt remove' では保持され、'apt purge' で削除されます。アカウントを変更する前にログアウトしてください。本アプリはループバックのみを待ち受け、ピア通信は UDP 41641 を使用します。"
+
+[ko-kr]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale은 WireGuard를 기반으로 기기 간 사설 메시 네트워크를 만듭니다. 공인 IP나 포트 포워딩 없이 고정 100.x 주소로 어디서나 이 NAS에 접속할 수 있습니다. 이 패키지는 공식 tailscaled 데몬과 웹 콘솔을 전용 시스템 사용자로 실행합니다. 콘솔은 TOS 웹 UI의 /tailscale/(포트 8181)에서 열리며 추가 포트를 열지 않습니다."
+release_note = "최초 릴리스: 공식 Tailscale 1.104.5 정적 바이너리(x86_64/aarch64)와 공식 웹 콘솔 포함. 상태 확인, 로그인, SSH, 서브넷 라우트, 출구 노드 지원."
+important    = "노드 ID는 /var/lib/tailscale에 저장됩니다. 'apt remove'는 유지하고 'apt purge'는 삭제합니다. 계정을 바꾸기 전에 로그아웃하세요. 이 앱은 루프백에서만 수신하며 피어 트래픽은 UDP 41641을 사용합니다."
+
+[pl-pl]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale buduje prywatną sieć mesh między urządzeniami przy użyciu WireGuard: dostęp do tego NAS z dowolnego miejsca przez stały adres 100.x, bez publicznego IP i przekierowania portów. Pakiet zawiera oficjalny demon tailscaled i oryginalną konsolę web uruchamiane jako dedykowany użytkownik systemowy. Konsola jest dostępna w interfejsie TOS pod /tailscale/ (port 8181) i nie otwiera dodatkowych portów."
+release_note = "Pierwsze wydanie: oficjalne statyczne binaria Tailscale 1.104.5 dla x86_64 i aarch64 oraz oryginalna konsola web (stan, logowanie, SSH, trasy podsieci, węzły wyjściowe)."
+important    = "Tożsamość węzła jest przechowywana w /var/lib/tailscale: 'apt remove' ją zachowuje, 'apt purge' usuwa. Przed zmianą konta wyloguj się. Aplikacja nasłuchuje tylko na loopbacku; ruch między węzłami używa UDP 41641."
+
+[ru-ru]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale строит частную mesh-сеть между устройствами на основе WireGuard: доступ к этому NAS из любого места по постоянному адресу 100.x без публичного IP и проброса портов. Пакет содержит официальный демон tailscaled и оригинальную веб-консоль, работающие от отдельного системного пользователя. Консоль открывается через веб-интерфейс TOS по пути /tailscale/ (порт 8181) и не открывает дополнительных портов."
+release_note = "Первый выпуск: официальные статические сборки Tailscale 1.104.5 для x86_64 и aarch64 с оригинальной веб-консолью (статус, вход, SSH, маршруты подсетей, выходные узлы)."
+important    = "Идентификатор узла хранится в /var/lib/tailscale: 'apt remove' сохраняет его, 'apt purge' удаляет. Перед сменой аккаунта выйдите из системы. Приложение слушает только loopback; трафик между узлами использует UDP 41641."
+
+[tr-tr]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale, WireGuard üzerinden cihazlarınız arasında özel bir mesh ağ kurar: bu NAS'a her yerden sabit bir 100.x adresiyle ulaşın; genel IP veya port yönlendirme gerekmez. Paket, resmi tailscaled servisini ve özgün web konsolunu ayrı bir sistem kullanıcısıyla çalıştırır. Konsol, TOS web arayüzünde /tailscale/ (8181 portu) yolundan açılır ve ek port açmaz."
+release_note = "İlk sürüm: x86_64 ve aarch64 için resmi Tailscale 1.104.5 statik ikilileri ve özgün web konsolu (durum, oturum açma, SSH, alt ağ yolları, çıkış düğümleri)."
+important    = "Düğüm kimliği /var/lib/tailscale içinde saklanır: 'apt remove' korur, 'apt purge' siler. Hesap değiştirmeden önce oturumu kapatın. Uygulama yalnızca loopback üzerinde dinler; eş trafiği UDP 41641 kullanır."
+
+[pt-pt]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "O Tailscale cria uma rede privada em malha entre os seus dispositivos através do WireGuard: aceda a este NAS de qualquer lugar com um endereço 100.x estável, sem IP público nem reencaminhamento de portas. O pacote inclui o daemon oficial tailscaled e a consola web original, executados por um utilizador de sistema dedicado. A consola abre na interface TOS em /tailscale/ (porta 8181) e não expõe portas adicionais."
+release_note = "Primeira versão: binários estáticos oficiais do Tailscale 1.104.5 para x86_64 e aarch64 com a consola web original (estado, sessão, SSH, rotas de sub-rede e nós de saída)."
+important    = "A identidade do nó fica em /var/lib/tailscale: 'apt remove' preserva-a, 'apt purge' elimina-a. Termine a sessão antes de mudar de conta. A aplicação só escuta em loopback; o tráfego entre pares usa UDP 41641."
+
+[ar-sa]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "يبني Tailscale شبكة خاصة متداخلة بين أجهزتك عبر WireGuard: يمكنك الوصول إلى هذا الجهاز من أي مكان عبر عنوان ثابت 100.x دون IP عام أو إعادة توجيه منافذ. تتضمن الحزمة خدمة tailscaled الرسمية ولوحة التحكم الأصلية، وتعملان بمستخدم نظام مخصص. تُفتح اللوحة من واجهة TOS على المسار /tailscale/ (المنفذ 8181) دون كشف منافذ إضافية."
+release_note = "الإصدار الأول: ملفات Tailscale 1.104.5 الرسمية الثابتة لمعماريتي x86_64 وaarch64 مع لوحة التحكم الأصلية (الحالة، تسجيل الدخول، SSH، مسارات الشبكات الفرعية، عقد الخروج)."
+important    = "تُحفظ هوية العقدة في /var/lib/tailscale: يحتفظ بها 'apt remove' ويحذفها 'apt purge'. سجّل الخروج قبل تغيير الحساب. يستمع التطبيق على loopback فقط، ويستخدم حركة الأقران UDP 41641."
+
+[cs-cz]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale vytváří soukromou mesh síť mezi zařízeními pomocí WireGuard: k tomuto NAS se dostanete odkudkoli přes stabilní adresu 100.x, bez veřejné IP a přesměrování portů. Balíček obsahuje oficiální službu tailscaled a původní webovou konzoli spuštěné pod vyhrazeným systémovým uživatelem. Konzole se otevírá v rozhraní TOS na /tailscale/ (port 8181) a neotevírá žádné další porty."
+release_note = "První vydání: oficiální statické binárky Tailscale 1.104.5 pro x86_64 a aarch64 s původní webovou konzolí (stav, přihlášení, SSH, trasy podsítí, výstupní uzly)."
+important    = "Identita uzlu je uložena v /var/lib/tailscale: 'apt remove' ji zachová, 'apt purge' smaže. Před změnou účtu se odhlaste. Aplikace naslouchá pouze na loopbacku; provoz mezi uzly používá UDP 41641."
+
+[he-il]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale בונה רשת פרטית בין המכשירים שלך באמצעות WireGuard: אפשר להגיע ל-NAS הזה מכל מקום בכתובת 100.x קבועה, בלי IP ציבורי ובלי העברת פורטים. החבילה כוללת את שירות tailscaled הרשמי ואת מסוף האינטרנט המקורי, הפועלים כמשתמש מערכת ייעודי. המסוף נפתח מממשק ה-Web של TOS בנתיב /tailscale/ (פורט 8181) ואינו חושף פורטים נוספים."
+release_note = "מהדורה ראשונה: קובצי Tailscale 1.104.5 סטטיים רשמיים ל-x86_64 ול-aarch64 עם מסוף האינטרנט המקורי (מצב, התחברות, SSH, נתיבי רשתות משנה וצמתי יציאה)."
+important    = "זהות הצומת נשמרת ב-/var/lib/tailscale: ‏'apt remove' משאיר אותה, ‏'apt purge' מוחק אותה. יש להתנתק לפני החלפת חשבון. היישום מאזין רק ל-loopback; תעבורת עמיתים משתמשת ב-UDP 41641."
+
+[id-id]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale membangun jaringan mesh privat antar perangkat Anda dengan WireGuard: akses NAS ini dari mana saja melalui alamat 100.x yang tetap, tanpa IP publik dan tanpa penerusan port. Paket ini menyertakan daemon tailscaled resmi dan konsol web asli yang berjalan sebagai pengguna sistem khusus. Konsol dibuka dari antarmuka web TOS di /tailscale/ (port 8181) dan tidak membuka port tambahan."
+release_note = "Rilis pertama: biner statis resmi Tailscale 1.104.5 untuk x86_64 dan aarch64 dengan konsol web asli (status, login, SSH, rute subnet, node keluar)."
+important    = "Identitas node disimpan di /var/lib/tailscale: 'apt remove' mempertahankannya, 'apt purge' menghapusnya. Keluar sebelum mengganti akun. Aplikasi hanya mendengarkan di loopback; lalu lintas peer menggunakan UDP 41641."
+
+[nb-no]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale bygger et privat mesh-nettverk mellom enhetene dine med WireGuard: nå denne NAS-en hvor som helst via en fast 100.x-adresse, uten offentlig IP og uten portviding. Pakken inneholder den offisielle tailscaled-tjenesten og den originale webkonsollen, som kjører som en egen systembruker. Konsollen åpnes fra TOS-nettgrensesnittet på /tailscale/ (port 8181) og eksponerer ingen ekstra porter."
+release_note = "Første utgivelse: offisielle statiske Tailscale 1.104.5-binærfiler for x86_64 og aarch64 med den originale webkonsollen (status, innlogging, SSH, subnett-ruter, utgangsnoder)."
+important    = "Nodeidentiteten lagres i /var/lib/tailscale: 'apt remove' beholder den, 'apt purge' sletter den. Logg ut før du bytter konto. Appen lytter bare på loopback; peer-trafikk bruker UDP 41641."
+
+[nl-nl]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale bouwt een privé mesh-netwerk tussen je apparaten via WireGuard: bereik deze NAS overal via een vast 100.x-adres, zonder publiek IP en zonder port forwarding. Het pakket bevat de officiële tailscaled-daemon en de originele webconsole, uitgevoerd als een aparte systeemgebruiker. De console opent vanuit de TOS-webinterface op /tailscale/ (poort 8181) en opent geen extra poorten."
+release_note = "Eerste release: officiële statische Tailscale 1.104.5-binaries voor x86_64 en aarch64 met de originele webconsole (status, inloggen, SSH, subnetroutes, exit-nodes)."
+important    = "De node-identiteit staat in /var/lib/tailscale: 'apt remove' bewaart deze, 'apt purge' verwijdert deze. Log uit voordat je van account wisselt. De app luistert alleen op loopback; verkeer tussen peers gebruikt UDP 41641."
+
+[sv-se]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale bygger ett privat mesh-nätverk mellan dina enheter med WireGuard: nå denna NAS var som helst via en fast 100.x-adress, utan publik IP och utan portvidarebefordran. Paketet innehåller den officiella tailscaled-tjänsten och den ursprungliga webbkonsolen, som körs som en dedikerad systemanvändare. Konsolen öppnas från TOS webbgränssnitt på /tailscale/ (port 8181) och exponerar inga extra portar."
+release_note = "Första utgåvan: officiella statiska Tailscale 1.104.5-binärer för x86_64 och aarch64 med den ursprungliga webbkonsolen (status, inloggning, SSH, subnät-rutter, utgångsnoder)."
+important    = "Nodidentiteten sparas i /var/lib/tailscale: 'apt remove' behåller den, 'apt purge' raderar den. Logga ut innan du byter konto. Appen lyssnar endast på loopback; peer-trafik använder UDP 41641."
+
+[th-th]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale สร้างเครือข่ายเมชส่วนตัวระหว่างอุปกรณ์ของคุณด้วย WireGuard: เข้าถึง NAS เครื่องนี้ได้จากทุกที่ผ่านที่อยู่ 100.x ที่คงที่ โดยไม่ต้องมี IP สาธารณะหรือทำ port forwarding แพ็กเกจนี้มาพร้อม daemon tailscaled อย่างเป็นทางการและคอนโซลเว็บต้นฉบับ ซึ่งทำงานภายใต้ผู้ใช้ระบบเฉพาะ คอนโซลเปิดผ่านหน้าเว็บ TOS ที่ /tailscale/ (พอร์ต 8181) และไม่เปิดพอร์ตเพิ่มเติม"
+release_note = "รุ่นแรก: ไบนารีแบบสแตติกอย่างเป็นทางการของ Tailscale 1.104.5 สำหรับ x86_64 และ aarch64 พร้อมคอนโซลเว็บต้นฉบับ (สถานะ การเข้าสู่ระบบ SSH เส้นทางซับเน็ต และโหนดทางออก)"
+important    = "ข้อมูลระบุตัวตนของโหนดเก็บอยู่ใน /var/lib/tailscale: 'apt remove' จะเก็บไว้ ส่วน 'apt purge' จะลบออก ออกจากระบบก่อนเปลี่ยนบัญชี แอปนี้รับฟังเฉพาะ loopback และใช้ UDP 41641 สำหรับทราฟฟิกระหว่างโหนด"
+
+[vi-vn]
+name         = "Tailscale"
+auth         = "Tailscale Inc."
+version      = "@@VERSION@@"
+descript     = "Tailscale tạo mạng lưới riêng giữa các thiết bị của bạn bằng WireGuard: truy cập NAS này từ mọi nơi qua địa chỉ 100.x cố định, không cần IP công cộng và không cần chuyển tiếp cổng. Gói này bao gồm tiến trình tailscaled chính thức và bảng điều khiển web gốc, chạy dưới một người dùng hệ thống riêng. Bảng điều khiển mở qua giao diện web TOS tại /tailscale/ (cổng 8181) và không mở thêm cổng nào."
+release_note = "Bản phát hành đầu tiên: tệp nhị phân tĩnh Tailscale 1.104.5 chính thức cho x86_64 và aarch64 cùng bảng điều khiển web gốc (trạng thái, đăng nhập, SSH, tuyến mạng con, nút thoát)."
+important    = "Danh tính nút được lưu trong /var/lib/tailscale: 'apt remove' giữ lại, 'apt purge' sẽ xóa. Hãy đăng xuất trước khi đổi tài khoản. Ứng dụng chỉ lắng nghe trên loopback; lưu lượng giữa các nút dùng UDP 41641."

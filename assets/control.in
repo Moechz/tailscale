@@ -1,0 +1,24 @@
+Package: tailscale
+Version: @VERSION@
+Architecture: @ARCH@
+Maintainer: @MAINTAINER@
+Installed-Size: @SIZE@
+Depends: systemd
+Conflicts: tailscaled
+Replaces: tailscaled
+Section: utils
+Priority: optional
+Homepage: https://github.com/tailscale/tailscale
+Description: Tailscale mesh VPN (WireGuard-based) for TOS 7
+ Tailscale builds a private mesh network between your devices using
+ WireGuard. This package runs the official upstream tailscaled daemon
+ as a dedicated, unprivileged system user with only the capabilities
+ it needs (CAP_NET_ADMIN, CAP_NET_RAW), and serves the upstream web
+ console on loopback, reverse-proxied by the TOS web server at
+ /tailscale/.
+ .
+ No extra port is exposed: the console listens on 127.0.0.1:8088 and is
+ reached through http://<NAS>:8181/tailscale/. Peer traffic uses UDP
+ 41641. Node state lives in /var/lib/tailscale.
+ .
+ Upstream author: Tailscale Inc. Packaged for TOS by Moechz.

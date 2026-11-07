@@ -1,0 +1,23 @@
+// 最小授权：只允许 tailscale 用户通过 systemd-resolved 的 D-Bus 接口设置
+// 本机 TUN 接口的 DNS（MagicDNS 必需）。不授予任何其它 root 能力。
+// 若系统未安装 polkit / systemd-resolved，本文件存在也无副作用。
+polkit.addRule(function (action, subject) {
+    if (subject.user !== "tailscale") {
+        return polkit.Result.NOT_HANDLED;
+    }
+    var allowed = [
+        "org.freedesktop.resolve1.set-dns",
+        "org.freedesktop.resolve1.set-domains",
+        "org.freedesktop.resolve1.set-default-route",
+        "org.freedesktop.resolve1.set-llmnr",
+        "org.freedesktop.resolve1.set-mdns",
+        "org.freedesktop.resolve1.set-dns-over-tls",
+        "org.freedesktop.resolve1.set-dnssec",
+        "org.freedesktop.resolve1.set-nta",
+        "org.freedesktop.resolve1.revert"
+    ];
+    if (allowed.indexOf(action.id) >= 0) {
+        return polkit.Result.YES;
+    }
+    return polkit.Result.NOT_HANDLED;
+});

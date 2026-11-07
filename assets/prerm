@@ -1,0 +1,29 @@
+#!/bin/bash
+# prerm —— 停止服务；仅在 remove/deconfigure 时 disable（升级时 disable 会丢开机自启，坑 3）
+set -e
+
+APPID="tailscale"
+LOG="/var/log/${APPID}-maint.log"
+
+touch "$LOG" 2>/dev/null || true
+log() { printf '%s\n' "$*" | tee -a "$LOG"; }
+
+log "=== prerm $1 $(date -Is) ==="
+
+case "$1" in
+  remove|deconfigure|purge)
+    systemctl disable --now tailscale-web >/dev/null 2>&1 || true
+    systemctl disable --now tailscale >/dev/null 2>&1 || true
+    log "已停止并禁用 tailscale / tailscale-web"
+    ;;
+  *)
+    systemctl stop tailscale-web >/dev/null 2>&1 || true
+    systemctl stop tailscale >/dev/null 2>&1 || true
+    log "已停止服务（保留 enable 状态，升级后仍随开机自启）"
+    ;;
+esac
+
+# 清理残留进程（tailscaled 若在 stop 超时后仍存活会占住 TUN）
+pkill -u "$APPID" >/dev/null 2>&1 || true
+
+exit 0

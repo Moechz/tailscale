@@ -1,0 +1,136 @@
+#!/bin/bash
+# postinst —— 幂等：属主 / webui 解压 / 配置模板 / 服务启停 / nginx 校验 / 就绪检查
+set -e
+
+APPID="tailscale"
+UNIT="tailscale"
+WEB_UNIT="tailscale-web"
+APPDIR="/usr/local/${APPID}"
+LOG="/var/log/${APPID}-maint.log"
+
+mkdir -p /var/log
+touch "$LOG" 2>/dev/null || true
+log() { printf '%s\n' "$*" | tee -a "$LOG"; }
+warn() { printf '警告: %s\n' "$*" | tee -a "$LOG" >&2; }
+
+log "=== postinst $1 $(date -Is) ==="
+
+# 1) 用户兜底（preinst 已建；平台安装时也会建）
+if ! getent passwd "$APPID" >/dev/null 2>&1; then
+  useradd --system --user-group --no-create-home --shell /usr/sbin/nologin "$APPID"
+  log "已补建系统用户 $APPID"
+fi
+
+# 2) 应用目录属主
+if [ -d "$APPDIR" ]; then
+  chown -R "${APPID}:${APPID}" "$APPDIR"
+fi
+
+# 3) /dev/net/tun（TOS 默认没有；tmpfiles.d 负责开机重建）
+if [ ! -c /dev/net/tun ]; then
+  mkdir -p /dev/net
+  if mknod /dev/net/tun c 10 200 2>>"$LOG"; then
+    chmod 666 /dev/net/tun
+    log "已创建设备节点 /dev/net/tun"
+  else
+    warn "/dev/net/tun 创建失败；请确认内核已加载 tun 模块（lsmod | grep tun）"
+  fi
+fi
+
+# 4) 解压 webui.bz2（入口页；失败不阻断主服务）
+if [ -f "$APPDIR/webui.bz2" ]; then
+  rm -rf "$APPDIR/webui"
+  mkdir -p "$APPDIR/webui"
+  if tar xjf "$APPDIR/webui.bz2" -C "$APPDIR/webui" 2>>"$LOG"; then
+    chmod -R a+rX "$APPDIR/webui"
+    chown -R "${APPID}:${APPID}" "$APPDIR/webui"
+    log "webui 已解压到 $APPDIR/webui"
+  else
+    warn "webui.bz2 解压失败（不影响 tailscaled）"
+  fi
+fi
+
+# 5) 配置模板首装复制，升级永不覆盖用户配置
+if [ ! -e "$APPDIR/${APPID}.env" ] && [ -f "$APPDIR/${APPID}.env.example" ]; then
+  cp "$APPDIR/${APPID}.env.example" "$APPDIR/${APPID}.env"
+  chown "${APPID}:${APPID}" "$APPDIR/${APPID}.env"
+  chmod 0640 "$APPDIR/${APPID}.env"
+  log "已生成 $APPDIR/${APPID}.env（首装默认值）"
+fi
+
+# 6) 与上游同名 systemd 单元共存时，停掉旧单元避免双实例抢 TUN/端口
+if systemctl list-unit-files tailscaled.service >/dev/null 2>&1 \
+   && systemctl list-unit-files tailscaled.service 2>/dev/null | grep -q '^tailscaled\.service'; then
+  warn "检测到上游 tailscaled.service，停止并禁用以避免双实例"
+  systemctl disable --now tailscaled.service 2>>"$LOG" || true
+fi
+
+# 7) systemd 重载 + 幂等 enable
+systemctl daemon-reload
+systemctl enable "$UNIT" >/dev/null 2>&1 || warn "enable $UNIT 失败"
+systemctl enable "$WEB_UNIT" >/dev/null 2>&1 || warn "enable $WEB_UNIT 失败"
+
+# 8) nginx 配置校验（包内已落 /etc/nginx/conf.d），失败即回滚，避免拖垮整站
+NGINX_CONF="/etc/nginx/conf.d/${APPID}.conf"
+if command -v nginx >/dev/null 2>&1; then
+  if ! nginx -t 2>>"$LOG"; then
+    warn "nginx -t 失败；临时禁用 $NGINX_CONF 以免整站不可用"
+    mv -f "$NGINX_CONF" "${NGINX_CONF}.disabled" 2>/dev/null || true
+    if nginx -t 2>>"$LOG"; then
+      log "已回滚本项目 nginx 配置，其余路由不受影响"
+    else
+      warn "nginx 配置本身有问题（非本包引起），请检查 /etc/nginx"
+    fi
+  fi
+  systemctl reload nginx 2>>"$LOG" || systemctl restart nginx 2>>"$LOG" || warn "nginx reload 失败"
+fi
+
+# 9) 启动（升级路径同样 restart，确保新二进制生效）
+set +e
+systemctl restart "$UNIT"
+main_rc=$?
+systemctl restart "$WEB_UNIT"
+web_rc=$?
+set -e
+if [ $main_rc -ne 0 ]; then
+  warn "tailscaled 启动失败（rc=$main_rc），最近日志："
+  systemctl --no-pager status "$UNIT" -n 30 2>&1 | tee -a "$LOG" >&2
+fi
+if [ $web_rc -ne 0 ]; then
+  warn "tailscale web 启动失败（rc=$web_rc），最近日志："
+  systemctl --no-pager status "$WEB_UNIT" -n 30 2>&1 | tee -a "$LOG" >&2
+fi
+
+# 9b) 首装默认值：关闭 MagicDNS（CorpDNS），避免 TOS 上无法写 resolv.conf 产生的健康告警。
+#     只做一次（用户之后可在控制台重新打开）；purge 重装会重新应用。
+if [ ! -e "/var/lib/${APPID}/.defaults-applied" ]; then
+  if command -v runuser >/dev/null 2>&1; then
+    runuser -u "$APPID" -- "$APPDIR/bin/tailscale" set --accept-dns=false >>"$LOG" 2>&1
+  else
+    su -s /bin/sh "$APPID" -c "$APPDIR/bin/tailscale set --accept-dns=false" >>"$LOG" 2>&1
+  fi
+  if [ $? -eq 0 ]; then
+    touch "/var/lib/${APPID}/.defaults-applied" 2>/dev/null || true
+    log "已应用首装默认值：--accept-dns=false（MagicDNS 关闭）"
+  else
+    warn "应用首装默认值失败（不影响隧道功能）"
+  fi
+fi
+
+# 10) 就绪检查：控制台回环可达（30s 上限）
+ready=0
+for _ in $(seq 1 30); do
+  if curl -fsS -o /dev/null --max-time 2 "http://127.0.0.1:8088/" 2>/dev/null; then
+    ready=1
+    break
+  fi
+  sleep 1
+done
+if [ $ready -eq 1 ]; then
+  log "控制台就绪: http://127.0.0.1:8088/"
+else
+  warn "控制台 30s 内未就绪；排查: journalctl -u ${UNIT} -n 50 --no-pager"
+fi
+
+log "安装完成。打开方式: http://<NAS 的 IP>:8181/${APPID}/"
+exit 0

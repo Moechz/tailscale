@@ -1,0 +1,26 @@
+[Unit]
+Description=Tailscale web console (loopback only, proxied by TOS nginx)
+Documentation=https://tailscale.com/kb/
+After=tailscale.service
+Requires=tailscale.service
+PartOf=tailscale.service
+
+[Service]
+Type=simple
+User=tailscale
+Group=tailscale
+Environment=HOME=/var/lib/tailscale
+Environment=XDG_CACHE_HOME=/var/lib/tailscale/.cache
+ExecStart=/usr/local/tailscale/bin/tailscale web --listen 127.0.0.1:8088
+TimeoutStartSec=30
+TimeoutStopSec=10
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=-/run/tailscale -/var/lib/tailscale
+LimitNOFILE=65536
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target
