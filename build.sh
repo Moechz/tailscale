@@ -111,6 +111,7 @@ stage_stage() {
       -e "s|@@PUBLISHER@@|$PUBLISHER|g" \
       -e "s|@@PLATFORM@@|$TOS_PLATFORM|g" \
       -e "s|@@GITHUB_REPO@@|$GITHUB_REPO|g" \
+      -e "s|@@OFFICIAL_URL@@|$OFFICIAL_URL|g" \
       "$ASSETS_DIR/config.ini.in" > "$APP/config.ini"
 
   # ---- 语言文件 ----
@@ -214,9 +215,9 @@ stage_verify() {
   }
 
   log "校验 config.ini（官方自测同口径）"
-  if python3 - "$APP/config.ini" "$TOS_PLATFORM" "$VERSION_FULL" <<'PYC'
+  if python3 - "$APP/config.ini" "$TOS_PLATFORM" "$VERSION_FULL" "$OFFICIAL_URL" <<'PYC'
 import json, sys
-p, platform, version = sys.argv[1], sys.argv[2], sys.argv[3]
+p, platform, version, official_url = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 d = json.load(open(p))
 errs = []
 if d.get("id") != "tailscale": errs.append("id != tailscale")
@@ -231,6 +232,8 @@ for k in ("system_id", "package", "user"):
     if d.get(k) != "tailscale": errs.append(k + " != tailscale")
 if d.get("publisher") != "Moechz": errs.append("publisher 必须是 Moechz")
 if d.get("category") != ["Utilities"]: errs.append("category 非法")
+if d.get("official") != official_url: errs.append("official != " + official_url)
+if d.get("all_user_display") is not False: errs.append("all_user_display 必须 false")
 if d.get("icon") != "/images/icons/tailscale.svg": errs.append("icon 路径非法")
 if errs:
     print("    " + "; ".join(errs)); sys.exit(1)

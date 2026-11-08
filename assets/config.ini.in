@@ -14,11 +14,11 @@
   "depend": [],
   "relation": [],
   "platform": "@@PLATFORM@@",
-  "official": "https://github.com/@@GITHUB_REPO@@/issues",
+  "official": "@@OFFICIAL_URL@@",
   "application_type": "deb",
   "system_id": "tailscale",
   "package": "tailscale",
   "user": "tailscale",
-  "all_user_display": true,
+  "all_user_display": false,
   "allow_open_in_mobile": false
 }
