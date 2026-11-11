@@ -1,12 +1,12 @@
 #!/bin/bash
 # postrm —— purge 时清理状态/用户；remove 保留 /var/lib/tailscale（重装可续用节点身份）
-set -e
+set -u
 
 APPID="tailscale"
 LOG="/var/log/${APPID}-maint.log"
 
 touch "$LOG" 2>/dev/null || true
-log() { printf '%s\n' "$*" | tee -a "$LOG"; }
+log() { printf '%s\n' "$*" 2>/dev/null | tee -a "$LOG" 2>/dev/null || true; }
 
 log "=== postrm $1 $(date -Is) ==="
 

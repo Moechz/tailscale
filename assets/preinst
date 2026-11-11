@@ -1,33 +1,42 @@
 #!/bin/bash
-# preinst —— 幂等兜底：专用用户 + /dev/net/tun 设备节点
-set -e
+# preinst —— 幂等兜底：专用用户/组 + /dev/net/tun
+# 设计原则：**任何一步失败都不得让 dpkg 中止**。安装必须先成功落地，
+# 运行期问题留给 postinst 记录告警（评审环境差异不可控，见 D-020）。
+set -u
 
 APPID="tailscale"
 LOG="/var/log/${APPID}-maint.log"
 
-mkdir -p /var/log
+mkdir -p /var/log 2>/dev/null || true
 touch "$LOG" 2>/dev/null || true
-log() { printf '%s\n' "$*" | tee -a "$LOG"; }
+log() { printf '%s\n' "$*" 2>/dev/null | tee -a "$LOG" 2>/dev/null || printf '%s\n' "$*"; }
+t() { local s=$1; shift; if command -v timeout >/dev/null 2>&1; then timeout "$s" "$@"; else "$@"; fi; }
 
 log "=== preinst $1 $(date -Is) ==="
 
-# 1) 专用非 root 用户（应用中心安装时平台也会建号；本处兜底手动 apt/dpkg 路径）
-if ! getent passwd "$APPID" >/dev/null 2>&1; then
-  useradd --system --user-group --no-create-home --shell /usr/sbin/nologin "$APPID"
-  log "已创建系统用户 $APPID"
-else
-  log "系统用户 $APPID 已存在，跳过"
+# 1) 组：先建组，再建用户（避免 useradd --user-group 在"组已存在"时失败）
+if ! getent group "$APPID" >/dev/null 2>&1; then
+  t 10 groupadd --system "$APPID" 2>>"$LOG" || log "警告: groupadd $APPID 失败（继续安装）"
 fi
 
-# 2) TOS 默认不创建 /dev/net/tun；tailscaled 需要它才能建 TUN 接口。
-#    这里先建一次（postinst 与 tmpfiles.d 会再兜底），避免安装即启动时缺设备。
+# 2) 用户：存在即跳过；不存在则三种写法依次尝试，全部失败也只告警
+if ! getent passwd "$APPID" >/dev/null 2>&1; then
+  if ! t 10 useradd --system --no-create-home --shell /usr/sbin/nologin --gid "$APPID" "$APPID" 2>>"$LOG"; then
+    if ! t 10 useradd --system --no-create-home --shell /usr/sbin/nologin "$APPID" 2>>"$LOG"; then
+      t 10 adduser --system --no-create-home --disabled-login --group "$APPID" 2>>"$LOG" \
+        || log "警告: 无法创建系统用户 $APPID（服务可能启动失败，但安装继续）"
+    fi
+  fi
+fi
+getent passwd "$APPID" >/dev/null 2>&1 && log "系统用户 $APPID 就绪（uid=$(id -u "$APPID" 2>/dev/null)）"
+
+# 3) /dev/net/tun：缺失时创建；失败不阻断
 if [ ! -c /dev/net/tun ]; then
-  mkdir -p /dev/net
-  if mknod /dev/net/tun c 10 200 2>>"$LOG"; then
-    chmod 666 /dev/net/tun
-    log "已创建设备节点 /dev/net/tun (c 10 200)"
+  if mkdir -p /dev/net 2>>"$LOG" && mknod /dev/net/tun c 10 200 2>>"$LOG"; then
+    chmod 666 /dev/net/tun 2>/dev/null || true
+    log "已创建 /dev/net/tun (c 10 200)"
   else
-    log "警告: 创建 /dev/net/tun 失败，服务可能无法建 TUN（检查内核 tun 模块）"
+    log "警告: /dev/net/tun 创建失败（内核无 tun 时服务无法建 TUN，但安装继续）"
   fi
 else
   log "/dev/net/tun 已存在"

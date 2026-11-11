@@ -3,9 +3,6 @@ Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINTAINER@
 Installed-Size: @SIZE@
-Depends: systemd
-Conflicts: tailscaled
-Replaces: tailscaled
 Section: utils
 Priority: optional
 Homepage: https://github.com/tailscale/tailscale
